@@ -1,0 +1,2 @@
+#!/bin/sh
+setxkbmap -layout br -variant thinkpad
