@@ -1,2 +1,2 @@
 #!/bin/sh
-setxkbmap -layout br -variant thinkpad
+ibus-daemon -dr
