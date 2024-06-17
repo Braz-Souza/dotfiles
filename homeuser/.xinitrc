@@ -2,4 +2,5 @@
 /usr/bin/wireplumber &
 /usr/bin/pipewire-pulse &
 exec xcompmgr &
+exec slstatus &
 exec dwm
