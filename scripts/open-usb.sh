@@ -1,8 +1,17 @@
 #!/bin/bash
 lsblk
-read -p "Onde fica a partição publica (i.e /dev/sdc1 --> >>sdc1) >>" portb
-read -p "Onde fica a partição privada (i.e /dev/sdc2 --> >>sdc2) >>" privt
-cryptsetup open /dev/$privt private
+read -p "Where is your flash drive partition (i.e /dev/sdb) >> " PARTT
+
+# ... /dev/sdc -J ...
+lsblk $PARTT -J > iusearchbtw.txt
+# BAD CODE!!! i will change it when i learn more about bash
+IAM="$(sed "1,10d" iusearchbtw.txt)"
+SORRY="$(echo -e "$IAM" | grep -o '"name": "[^"]*' | grep -o '[^"]*$')" 
+echo -e "$SORRY" > iusearchbtw.txt
+PORTB="$(sed "2,256d" iusearchbtw.txt)"
+PRIVT="$(sed "1d" iusearchbtw.txt | sed "2,256d" )"
+rm iusearchbtw.txt
+echo -e "PORTABLE: /dev/$PORTB\nPRIVATE: /dev/$PRIVT"
 
 if [[ ! -e /mnt/private ]]; then
 	mkdir /mnt/private
@@ -12,6 +21,13 @@ if [[ ! -e /mnt/portable ]]; then
 	mkdir /mnt/portable
 fi
 
-mount /dev/$portb /mnt/portable
-mount /dev/mapper/private /mnt/private
+mount /dev/$PORTB /mnt/portable
+echo "Non-Encrypted Partition Mounted!"
 
+cryptsetup open /dev/$PRIVT private
+echo "Encrypted Partition Decrypted successfully!"
+
+mount /dev/mapper/private /mnt/private
+echo "Encrypted Partition Mounted!"
+
+lsblk
