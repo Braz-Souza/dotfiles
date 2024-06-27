@@ -1,1 +1,1 @@
-libx11 libxft libxinerama xorg-xinit xorg-server webkit2gtk ttf-fira-code otf-font-awesome pipewire pipewire-pulse scrot xcompmgr feh ibus ibus-anthy xautolock
+libx11 libxft libxinerama xorg-xinit xorg-server webkit2gtk ttf-fira-code otf-font-awesome pipewire pipewire-pulse scrot xcompmgr feh ibus ibus-anthy xautolock ttf-nerd-fonts-symbols
