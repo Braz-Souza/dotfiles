@@ -3,4 +3,4 @@
 /usr/bin/pipewire-pulse &
 exec xcompmgr &
 exec slstatus &
-exec dwm
+exec ~/dotfiles/scripts/startdwm
