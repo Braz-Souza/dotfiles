@@ -68,9 +68,9 @@ static const struct arg args[] = {
 	{ username,	" %s@", 	NULL	},
 	{ hostname,	"%s |", 	NULL	},
 	{ keymap,	" %s |",	NULL	},
-	{ cpu_perc,     " %s%%", NULL    },
-	{ ram_perc,     "/%s%%", NULL    },
-	{ disk_perc,	"/%s%% |","/"},
-	{ battery_perc, " BAT: %s%% |", "BAT0"  },
+	{ cpu_perc,     " %s ", NULL    },
+	{ ram_perc,     " %s ", NULL    },
+	{ disk_perc,	" %s 󰉉","/"},
+	{ battery_perc, " %s 󰂎 |", "BAT0"  },
 	{ datetime,     " %s",          "%F %T" },
 };
