@@ -7,8 +7,8 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=12" };
-static const char dmenufont[]       = "monospace:size=12";
+static const char *fonts[]          = { "UbuntuMonoNerdFont:size=12" };
+static const char dmenufont[]       = "UbuntuMonoNerdFont:size=12";
 static const char col_gray1[]       = "#282a36";
 static const char col_gray2[]       = "#ffb86c";
 static const char col_gray3[]       = "#ff79c6";
@@ -21,7 +21,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { " <terminal>", "󰈹 <browser>", "󰍩 <messages>", " <learn>", "" };
+static const char *tags[] = { " 󰣇 ", " ", "󰈹 ", "󰍩 ", " ", " " };
 
 static const Rule rules[] = {
 	/* xprop(1):
