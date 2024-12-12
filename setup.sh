@@ -16,7 +16,7 @@ DWM=$BASE/dwm
 ST=$BASE/st
 SLSTATUS=$BASE/slstatus
 SLOCK=$BASE/slock
-DMENU=$BASE/DMENU
+DMENU=$BASE/dmenu
 
 # Pass scripts directory to DWM to use it to execute script as shortcuts
 cp $DWM/config.def.h $DWM/config.def.h.orig
