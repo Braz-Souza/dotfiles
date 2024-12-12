@@ -1,5 +1,5 @@
 /* user and group to drop privileges to */
-static const char *user  = "USER_NAME";
+static const char *user  = "vazio";
 static const char *group = "wheel";
 
 static const char *colorname[NUMCOLS] = {
@@ -12,4 +12,4 @@ static const char *colorname[NUMCOLS] = {
 static const int failonclear = 1;
 
 /* Background image path, should be available to the user above */
-static const char* background_image = "/home/USER_NAME/.dotfiles/Wallpapers/bg_slock.png";
+static const char* background_image = "/home/vazio/Wallpapers/wallpaper_lain_2.png";
