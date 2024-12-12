@@ -57,6 +57,7 @@
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
 #define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
@@ -127,7 +128,7 @@ struct Monitor {
 	int by;               /* bar geometry */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
-	int gappx;	      /* gaps between windows */
+	int gappx;            /* gaps between windows */
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -323,7 +324,7 @@ applyrules(Client *c)
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isterminal = r->isterminal;
-			c->noswallow = r->noswallow;
+			c->noswallow  = r->noswallow;
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -446,47 +447,47 @@ void
 swallow(Client *p, Client *c)
 {
 
-       if (c->noswallow || c->isterminal)
-               return;
-       if (c->noswallow && !swallowfloating && c->isfloating)
-               return;
+	if (c->noswallow || c->isterminal)
+		return;
+	if (c->noswallow && !swallowfloating && c->isfloating)
+		return;
 
-       detach(c);
-       detachstack(c);
+	detach(c);
+	detachstack(c);
 
-       setclientstate(c, WithdrawnState);
-       XUnmapWindow(dpy, p->win);
+	setclientstate(c, WithdrawnState);
+	XUnmapWindow(dpy, p->win);
 
-       p->swallowing = c;
-       c->mon = p->mon;
+	p->swallowing = c;
+	c->mon = p->mon;
 
-       Window w = p->win;
-       p->win = c->win;
-       c->win = w;
-       updatetitle(p);
-       XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h);
-       arrange(p->mon);
-       configure(p);
-       updateclientlist();
+	Window w = p->win;
+	p->win = c->win;
+	c->win = w;
+	updatetitle(p);
+	XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h);
+	arrange(p->mon);
+	configure(p);
+	updateclientlist();
 }
 
 void
 unswallow(Client *c)
 {
-       c->win = c->swallowing->win;
+	c->win = c->swallowing->win;
 
-       free(c->swallowing);
-       c->swallowing = NULL;
+	free(c->swallowing);
+	c->swallowing = NULL;
 
-       /* unfullscreen the client */
-       setfullscreen(c, 0);
-       updatetitle(c);
-       arrange(c->mon);
-       XMapWindow(dpy, c->win);
-       XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
-       setclientstate(c, NormalState);
-       focus(NULL);
-       arrange(c->mon);
+	/* unfullscreen the client */
+	setfullscreen(c, 0);
+	updatetitle(c);
+	arrange(c->mon);
+	XMapWindow(dpy, c->win);
+	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
+	setclientstate(c, NormalState);
+	focus(NULL);
+	arrange(c->mon);
 }
 
 void
@@ -730,7 +731,7 @@ destroynotify(XEvent *e)
 
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
-	
+
 	else if ((c = swallowingclient(ev->window)))
 		unmanage(c->swallowing, 1);
 }
@@ -1475,78 +1476,78 @@ run(void)
 void
 runautostart(void)
 {
-       char *pathpfx;
-       char *path;
-       char *xdgdatahome;
-       char *home;
-       struct stat sb;
+	char *pathpfx;
+	char *path;
+	char *xdgdatahome;
+	char *home;
+	struct stat sb;
 
-       if ((home = getenv("HOME")) == NULL)
-               /* this is almost impossible */
-               return;
+	if ((home = getenv("HOME")) == NULL)
+		/* this is almost impossible */
+		return;
 
-       /* if $XDG_DATA_HOME is set and not empty, use $XDG_DATA_HOME/dwm,
-        * otherwise use ~/.local/share/dwm as autostart script directory
-        */
-       xdgdatahome = getenv("XDG_DATA_HOME");
-       if (xdgdatahome != NULL && *xdgdatahome != '\0') {
-               /* space for path segments, separators and nul */
-               pathpfx = ecalloc(1, strlen(xdgdatahome) + strlen(dwmdir) + 2);
+	/* if $XDG_DATA_HOME is set and not empty, use $XDG_DATA_HOME/dwm,
+	 * otherwise use ~/.local/share/dwm as autostart script directory
+	 */
+	xdgdatahome = getenv("XDG_DATA_HOME");
+	if (xdgdatahome != NULL && *xdgdatahome != '\0') {
+		/* space for path segments, separators and nul */
+		pathpfx = ecalloc(1, strlen(xdgdatahome) + strlen(dwmdir) + 2);
 
-               if (sprintf(pathpfx, "%s/%s", xdgdatahome, dwmdir) <= 0) {
-                       free(pathpfx);
-                       return;
-               }
-       } else {
-               /* space for path segments, separators and nul */
-               pathpfx = ecalloc(1, strlen(home) + strlen(localshare)
-                                    + strlen(dwmdir) + 3);
+		if (sprintf(pathpfx, "%s/%s", xdgdatahome, dwmdir) <= 0) {
+			free(pathpfx);
+			return;
+		}
+	} else {
+		/* space for path segments, separators and nul */
+		pathpfx = ecalloc(1, strlen(home) + strlen(localshare)
+		                     + strlen(dwmdir) + 3);
 
-               if (sprintf(pathpfx, "%s/%s/%s", home, localshare, dwmdir) < 0) {
-                       free(pathpfx);
-                       return;
-               }
-       }
+		if (sprintf(pathpfx, "%s/%s/%s", home, localshare, dwmdir) < 0) {
+			free(pathpfx);
+			return;
+		}
+	}
 
-       /* check if the autostart script directory exists */
-       if (! (stat(pathpfx, &sb) == 0 && S_ISDIR(sb.st_mode))) {
-               /* the XDG conformant path does not exist or is no directory
-                * so we try ~/.dwm instead
-                */
-               char *pathpfx_new = realloc(pathpfx, strlen(home) + strlen(dwmdir) + 3);
-               if(pathpfx_new == NULL) {
-                       free(pathpfx);
-                       return;
-               }
-               pathpfx = pathpfx_new;
+	/* check if the autostart script directory exists */
+	if (! (stat(pathpfx, &sb) == 0 && S_ISDIR(sb.st_mode))) {
+		/* the XDG conformant path does not exist or is no directory
+		 * so we try ~/.dwm instead
+		 */
+		char *pathpfx_new = realloc(pathpfx, strlen(home) + strlen(dwmdir) + 3);
+		if(pathpfx_new == NULL) {
+			free(pathpfx);
+			return;
+		}
+		pathpfx = pathpfx_new;
 
-               if (sprintf(pathpfx, "%s/.%s", home, dwmdir) <= 0) {
-                       free(pathpfx);
-                       return;
-               }
-       }
+		if (sprintf(pathpfx, "%s/.%s", home, dwmdir) <= 0) {
+			free(pathpfx);
+			return;
+		}
+	}
 
-       /* try the blocking script first */
-       path = ecalloc(1, strlen(pathpfx) + strlen(autostartblocksh) + 2);
-       if (sprintf(path, "%s/%s", pathpfx, autostartblocksh) <= 0) {
-               free(path);
-               free(pathpfx);
-       }
+	/* try the blocking script first */
+	path = ecalloc(1, strlen(pathpfx) + strlen(autostartblocksh) + 2);
+	if (sprintf(path, "%s/%s", pathpfx, autostartblocksh) <= 0) {
+		free(path);
+		free(pathpfx);
+	}
 
-       if (access(path, X_OK) == 0)
-               system(path);
+	if (access(path, X_OK) == 0)
+		system(path);
 
-       /* now the non-blocking script */
-       if (sprintf(path, "%s/%s", pathpfx, autostartsh) <= 0) {
-               free(path);
-               free(pathpfx);
-       }
+	/* now the non-blocking script */
+	if (sprintf(path, "%s/%s", pathpfx, autostartsh) <= 0) {
+		free(path);
+		free(pathpfx);
+	}
 
-       if (access(path, X_OK) == 0)
-               system(strcat(path, " &"));
+	if (access(path, X_OK) == 0)
+		system(strcat(path, " &"));
 
-       free(pathpfx);
-       free(path);
+	free(pathpfx);
+	free(path);
 }
 
 void
@@ -1669,11 +1670,11 @@ setfullscreen(Client *c, int fullscreen)
 void
 setgaps(const Arg *arg)
 {
-       if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
-               selmon->gappx = 0;
-       else
-               selmon->gappx += arg->i;
-       arrange(selmon);
+	if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
+		selmon->gappx = 0;
+	else
+		selmon->gappx += arg->i;
+	arrange(selmon);
 }
 
 void
@@ -1867,19 +1868,19 @@ tile(Monitor *m)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 	else
 		mw = m->ww - m->gappx;
-        for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-                        if (i < m->nmaster) {
-                        h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
-                        resize(c, m->wx + m->gappx, m->wy + my, mw - (2*c->bw) - m->gappx, h - (2*c->bw), 0);
-                        if (my + HEIGHT(c) + m->gappx < m->wh)
-                                my += HEIGHT(c) + m->gappx;
-                } else {
-                        h = (m->wh - ty) / (n - i) - m->gappx;
-                        resize(c, m->wx + mw + m->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gappx, h - (2*c->bw), 0);
-                        if (ty + HEIGHT(c) + m->gappx < m->wh)
-                                ty += HEIGHT(c) + m->gappx;
-                }
- }
+	for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+			if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
+			resize(c, m->wx + m->gappx, m->wy + my, mw - (2*c->bw) - m->gappx, h - (2*c->bw), 0);
+			if (my + HEIGHT(c) + m->gappx < m->wh)
+				my += HEIGHT(c) + m->gappx;
+		} else {
+			h = (m->wh - ty) / (n - i) - m->gappx;
+			resize(c, m->wx + mw + m->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gappx, h - (2*c->bw), 0);
+			if (ty + HEIGHT(c) + m->gappx < m->wh)
+				ty += HEIGHT(c) + m->gappx;
+		}
+}
 
 void
 togglebar(const Arg *arg)
@@ -1979,6 +1980,7 @@ unmanage(Client *c, int destroyed)
 		XUngrabServer(dpy);
 	}
 	free(c);
+
 	if (!s) {
 		arrange(m);
 		focus(NULL);
@@ -2251,34 +2253,34 @@ pid_t
 winpid(Window w)
 {
 
-       pid_t result = 0;
+	pid_t result = 0;
 
 #ifdef __linux__
-       xcb_res_client_id_spec_t spec = {0};
-       spec.client = w;
-       spec.mask = XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID;
+	xcb_res_client_id_spec_t spec = {0};
+	spec.client = w;
+	spec.mask = XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID;
 
-       xcb_generic_error_t *e = NULL;
-       xcb_res_query_client_ids_cookie_t c = xcb_res_query_client_ids(xcon, 1, &spec);
-       xcb_res_query_client_ids_reply_t *r = xcb_res_query_client_ids_reply(xcon, c, &e);
+	xcb_generic_error_t *e = NULL;
+	xcb_res_query_client_ids_cookie_t c = xcb_res_query_client_ids(xcon, 1, &spec);
+	xcb_res_query_client_ids_reply_t *r = xcb_res_query_client_ids_reply(xcon, c, &e);
 
-       if (!r)
-               return (pid_t)0;
+	if (!r)
+		return (pid_t)0;
 
-       xcb_res_client_id_value_iterator_t i = xcb_res_query_client_ids_ids_iterator(r);
-       for (; i.rem; xcb_res_client_id_value_next(&i)) {
-               spec = i.data->spec;
-               if (spec.mask & XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID) {
-                       uint32_t *t = xcb_res_client_id_value_value(i.data);
-                       result = *t;
-                       break;
-               }
-       }
+	xcb_res_client_id_value_iterator_t i = xcb_res_query_client_ids_ids_iterator(r);
+	for (; i.rem; xcb_res_client_id_value_next(&i)) {
+		spec = i.data->spec;
+		if (spec.mask & XCB_RES_CLIENT_ID_MASK_LOCAL_CLIENT_PID) {
+			uint32_t *t = xcb_res_client_id_value_value(i.data);
+			result = *t;
+			break;
+		}
+	}
 
-       free(r);
+	free(r);
 
-       if (result == (pid_t)-1)
-               result = 0;
+	if (result == (pid_t)-1)
+		result = 0;
 
 #endif /* __linux__ */
 
@@ -2297,84 +2299,84 @@ winpid(Window w)
         result = ret;
 
 #endif /* __OpenBSD__ */
-       return result;
+	return result;
 }
 
 pid_t
 getparentprocess(pid_t p)
 {
-       unsigned int v = 0;
+	unsigned int v = 0;
 
 #ifdef __linux__
-       FILE *f;
-       char buf[256];
-       snprintf(buf, sizeof(buf) - 1, "/proc/%u/stat", (unsigned)p);
+	FILE *f;
+	char buf[256];
+	snprintf(buf, sizeof(buf) - 1, "/proc/%u/stat", (unsigned)p);
 
-       if (!(f = fopen(buf, "r")))
-               return 0;
+	if (!(f = fopen(buf, "r")))
+		return 0;
 
-       fscanf(f, "%*u %*s %*c %u", &v);
-       fclose(f);
+	fscanf(f, "%*u %*s %*c %u", &v);
+	fclose(f);
 #endif /* __linux__*/
 
 #ifdef __OpenBSD__
-       int n;
-       kvm_t *kd;
-       struct kinfo_proc *kp;
+	int n;
+	kvm_t *kd;
+	struct kinfo_proc *kp;
 
-       kd = kvm_openfiles(NULL, NULL, NULL, KVM_NO_FILES, NULL);
-       if (!kd)
-               return 0;
+	kd = kvm_openfiles(NULL, NULL, NULL, KVM_NO_FILES, NULL);
+	if (!kd)
+		return 0;
 
-       kp = kvm_getprocs(kd, KERN_PROC_PID, p, sizeof(*kp), &n);
-       v = kp->p_ppid;
+	kp = kvm_getprocs(kd, KERN_PROC_PID, p, sizeof(*kp), &n);
+	v = kp->p_ppid;
 #endif /* __OpenBSD__ */
 
-       return (pid_t)v;
+	return (pid_t)v;
 }
 
 int
 isdescprocess(pid_t p, pid_t c)
 {
-       while (p != c && c != 0)
-               c = getparentprocess(c);
+	while (p != c && c != 0)
+		c = getparentprocess(c);
 
-       return (int)c;
+	return (int)c;
 }
 
 Client *
 termforwin(const Client *w)
 {
-       Client *c;
-       Monitor *m;
+	Client *c;
+	Monitor *m;
 
-       if (!w->pid || w->isterminal)
-               return NULL;
+	if (!w->pid || w->isterminal)
+		return NULL;
 
-       for (m = mons; m; m = m->next) {
-               for (c = m->clients; c; c = c->next) {
-                       if (c->isterminal && !c->swallowing && c->pid && isdescprocess(c->pid, w->pid))
-                               return c;
-               }
-       }
+	for (m = mons; m; m = m->next) {
+		for (c = m->clients; c; c = c->next) {
+			if (c->isterminal && !c->swallowing && c->pid && isdescprocess(c->pid, w->pid))
+				return c;
+		}
+	}
 
-       return NULL;
+	return NULL;
 }
 
 Client *
 swallowingclient(Window w)
 {
-       Client *c;
-       Monitor *m;
+	Client *c;
+	Monitor *m;
 
-       for (m = mons; m; m = m->next) {
-               for (c = m->clients; c; c = c->next) {
-                       if (c->swallowing && c->swallowing->win == w)
-                               return c;
-               }
-       }
+	for (m = mons; m; m = m->next) {
+		for (c = m->clients; c; c = c->next) {
+			if (c->swallowing && c->swallowing->win == w)
+				return c;
+		}
+	}
 
-       return NULL;
+	return NULL;
 }
 
 Client *
