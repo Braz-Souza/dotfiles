@@ -1,2 +1,2 @@
 #!/bin/sh
-feh --no-fehbg --bg-fill '/home/vazio/Wallpapers/wallpaper_lain_1.png' 
+feh --no-fehbg --bg-fill $HOME'/.dotfiles/Wallpapers/bg_dwm.png' 
