@@ -28,7 +28,7 @@ sed -i "s|USER_NAME|${USER}|g" $SLOCK/config.def.h
 
 # Install Requirements
 sudo pacman -Syu
-sudo pacman -S feh xcompmgr scrot ibus xclip pipewire pipewire-pulse xautolock ttf-fira-code otf-ipafont ttf-baekmuk
+sudo pacman -S feh xcompmgr scrot ibus xclip pipewire pipewire-pulse xautolock ttf-fira-code otf-ipafont ttf-baekmuk syncthing
 
 # Install DWM
 cd $DWM && sudo make clean install
